@@ -1,29 +1,35 @@
 import { Pessoa } from "./Pessoa";
 
 export class Banco_Pessoas {
-    private pessoas: Pessoa[] = [];
+    private pessoas: Map<number, Pessoa> = new Map();
 
-    adicionarPessoa(pessoa: Pessoa): void {//Aqui foi 
-        const jaExiste = this.pessoas.some((p) => p.id === pessoa.id);
-        if (!jaExiste) {
-            this.pessoas.push(pessoa);
+    adicionarPessoa(pessoa: Pessoa): void {
+
+        if (this.pessoas.has(pessoa.id)) {
+            console.log(`Erro: ID ${pessoa.id} já existe.`);
+            return; 
         }
+
+        this.pessoas.set(pessoa.id, pessoa)
+        console.log(`Pessoa ${pessoa.nome} adicionada.`);
     }
 
     removerPessoa(id: number): boolean {
-        const indice = this.pessoas.findIndex((p) => p.id === id);
-        if (indice !== -1) {
-            this.pessoas.splice(indice, 1);
-            return true;
+        if(!this.pessoas.has(id)) {
+            console.log(`Erro: ID ${id} não encontrado.`);
+            return false
         }
-        return false;
+
+        this.pessoas.delete(id);
+        console.log(`Pessoa com ID ${id} removida.`);
+        return true;
     }
 
     buscarPessoa(id: number): Pessoa | undefined {
-        return this.pessoas.find((p) => p.id === id);
+        return this.pessoas.get(id)
     }
 
     listarPessoas(): Pessoa[] {
-        return [...this.pessoas];
+        return Array.from(this.pessoas.values())
     }
 }
